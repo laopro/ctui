@@ -81,11 +81,12 @@ export function App(props: AppProps) {
   const pick = (title: string, items: SelItem[], onPick: (v: any) => void, extra: Partial<Parameters<typeof Select>[0]> = {}) =>
     setDialog(() => () => <Select title={title} items={items} onPick={(v) => (close(), onPick(v))} onClose={close} {...extra} />)
 
-  const openModels = () => {
+  const openModels = async () => {
     const a = cur()
     if (!a) return
+    for (let i = 0; i < 10 && !a.chat.models.length; i++) await new Promise((r) => setTimeout(r, 300))
     const ms = a.chat.models
-    if (!ms.length) return flash("Models not loaded yet")
+    if (!ms.length) return flash("Still starting up — try again in a moment")
     pick("Select model", ms.map((m) => ({ title: m.displayName, desc: m.description?.slice(0, 40), value: m.value })), (v) => a.setModel(v))
   }
   const openModes = () => {

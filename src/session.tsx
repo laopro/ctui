@@ -375,15 +375,6 @@ export function Session(props: SessionProps) {
             <For each={items}>{(it) => <Body it={it} />}</For>
           </scrollbox>
         </Show>
-        <Show when={perm()}>
-          {(p) => (
-            <box flexShrink={0} border={["left"]} customBorderChars={SplitBorder} borderColor={T().orange} backgroundColor={T().panel} paddingLeft={2} paddingTop={1} paddingBottom={1}>
-              <text fg={T().orange}>Permission required: {p().tool}</text>
-              <text fg={T().muted}>{brief(p().input)}</text>
-              <text fg={T().text}>[enter/o] once  [a] always  [esc/r] reject</text>
-            </box>
-          )}
-        </Show>
         <Show when={rows().length}>
           <box flexShrink={0} backgroundColor={T().panel} paddingLeft={1} paddingRight={1}>
             <For each={rows()}>
@@ -463,6 +454,17 @@ export function Session(props: SessionProps) {
             </Sec>
           </Show>
         </box>
+      </Show>
+      <Show when={perm()}>
+        {(p) => (
+          <box position="absolute" left={0} top={0} width={dims().width} height={dims().height} alignItems="center" paddingTop={Math.floor(dims().height / 4)} backgroundColor="#00000099">
+            <box width={Math.min(70, dims().width - 4)} backgroundColor={T().panel} border borderColor={T().orange} paddingLeft={2} paddingRight={2} paddingTop={1} paddingBottom={1}>
+              <text fg={T().orange}>Permission required: {p().tool}</text>
+              <text fg={T().muted} marginTop={1}>{brief(p().input)}</text>
+              <text fg={T().text} marginTop={1}>[enter/o] once   [a] always   [esc/r] reject</text>
+            </box>
+          </box>
+        )}
       </Show>
     </box>
   )
