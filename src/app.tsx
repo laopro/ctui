@@ -176,6 +176,7 @@ export function App(props: AppProps) {
         if (!cs.length) return flash("No skills loaded yet")
         pick("Skills", cs.map((c) => ({ title: "/" + c.name, desc: c.description?.slice(0, 60), value: c.name })), (n) => a!.chat.send("/" + n), { width: 90 })
       },
+      paste: () => a?.paste(),
       undo: () => flash("Undo isn't available with Claude yet"),
       redo: () => flash("Redo isn't available with Claude yet"),
       connect: () => text("Log in", "Run `claude` once and use /login, or set ANTHROPIC_API_KEY."),

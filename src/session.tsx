@@ -39,6 +39,7 @@ export const LOCAL: Local[] = [
   { name: "variants", aliases: ["thinking", "effort"], desc: "Switch effort", cat: "Agent" },
   { name: "mcps", aliases: ["mcp"], desc: "Toggle MCPs", cat: "Agent" },
   { name: "skills", desc: "Skills", cat: "Prompt" },
+  { name: "paste", desc: "Paste image/text from clipboard", cat: "Prompt", key: "ctrl+v" },
   { name: "status", desc: "View status", cat: "System", key: "ctrl+x s" },
   { name: "connect", desc: "Log in", cat: "System" },
   { name: "themes", desc: "Switch theme", cat: "System", key: "ctrl+x t" },
@@ -50,7 +51,7 @@ const SAFE_SKIP = new Set(["node_modules", ".git", "dist", ".venv", "__pycache__
 const brief = (i: Record<string, any>) => String(i.file_path ?? i.command ?? i.pattern ?? i.url ?? i.description ?? "").slice(0, 120)
 const ft = (p: string) => ({ ts: "typescript", tsx: "tsx", js: "javascript", jsx: "jsx", py: "python", json: "json", md: "markdown", rs: "rust", go: "go", css: "css", html: "html", sh: "bash" })[extname(p).slice(1)]
 
-export type SessionApi = { chat: Chat; mode: () => string; setMode: (m: string) => void; model: () => string; setModel: (m: string) => void; status: () => string; effort: (l: string) => void; clear: () => void; info: () => string[] }
+export type SessionApi = { chat: Chat; mode: () => string; setMode: (m: string) => void; model: () => string; setModel: (m: string) => void; status: () => string; effort: (l: string) => void; clear: () => void; info: () => string[]; paste: () => void }
 export type SessionProps = {
   id: number
   cwd: string
@@ -178,6 +179,7 @@ export function Session(props: SessionProps) {
     status,
     effort: (l) => void chat.effort(l),
     clear: () => (setItems([]), setStatus("")),
+    paste: pasteClipboard,
     info: () => [
       `cwd: ${props.cwd}`,
       `model: ${model()}`,
@@ -427,9 +429,6 @@ export function Session(props: SessionProps) {
       <Show when={showSide()}>
         <box width={38} flexShrink={0} backgroundColor={T().panel} paddingLeft={2} paddingRight={2} paddingTop={1}>
           <text fg={T().text}>{basename(props.cwd)}</text>
-          <Sec title="Context">
-            <text fg={T().muted}>{ctx() ? `${ctx()!.tokens.toLocaleString()} tokens · ${Math.round(ctx()!.pct)}%` : "—"}</text>
-          </Sec>
           <Show when={mcp().length}>
             <Sec title="MCP">
               <For each={mcp()}>
@@ -441,6 +440,9 @@ export function Session(props: SessionProps) {
               </For>
             </Sec>
           </Show>
+          <Sec title="Context">
+            <text fg={T().muted}>{ctx() ? `${ctx()!.tokens.toLocaleString()} tokens · ${Math.round(ctx()!.pct)}%` : "—"}</text>
+          </Sec>
           <Show when={todos().length}>
             <Sec title="Todo">
               <For each={todos().slice(0, 8)}>
