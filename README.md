@@ -3,11 +3,29 @@
 A terminal UI for Claude, built on the public Claude Agent SDK, with OpenTUI + SolidJS. Not affiliated with, endorsed by, or sponsored by Anthropic.
 
 ## Install
+
+Windows (PowerShell):
 ```
+irm https://raw.githubusercontent.com/laopro/ctui/master/install.ps1 | iex
+```
+
+Linux/Mac (untested so far, best effort):
+```
+curl -fsSL https://raw.githubusercontent.com/laopro/ctui/master/install.sh | bash
+```
+
+Both clone the repo, run `npm install`, and add `bin/` to your PATH. Then run `ctui` in any folder.
+
+Manual install:
+```
+git clone https://github.com/laopro/ctui.git
+cd ctui
 npm install
 npm run build        # optional single binary in dist/ (untested with the SDK)
 ```
 Put `bin/` on your PATH, then run `ctui` in any folder.
+
+Requires Node.js and git. Needs either an existing `claude` login (run `claude` once, `/login`) or `ANTHROPIC_API_KEY` set.
 
 ## Usage
 `ctui [path] [--resume <id>] [-m <model>] [--mode default|acceptEdits|plan] [--theme <name>] [--list-themes] [--version]`
